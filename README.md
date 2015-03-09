@@ -19,7 +19,7 @@ $difference = MyDate::diff($start, $end);
 ```php
 stdClass {
     int   $years,        // The number of years between the two dates.
-    int   $months,       // The number of years between the two dates.
+    int   $months,       // The number of months between the two dates.
     int   $days,         // The number of days between the two dates less the months and the years.
     int   $total_days,   // The total days between the two dates including the months and years.
     bool  $invert        // true if the the difference is negative (i.e. $start > $end).
