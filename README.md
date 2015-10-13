@@ -1,7 +1,13 @@
 Avanti PHP Test
 ===============
 
-Calculate the difference between two given dates without using any of the built in PHP date functions or objects.
+Calculate the difference between two given dates without using any of the PHP date functions, objects or packages not written by yourself.
+
+This includes:
+ * DateTime
+ * IntlGregorianCalendar
+ * Calendar
+ * Any composer packages implementing date functions (ie https://packagist.org/search/?q=date)
 
 Assumptions
 -----------
