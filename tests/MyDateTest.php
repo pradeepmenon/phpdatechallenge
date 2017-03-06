@@ -7,7 +7,7 @@ class MyDateTest extends PHPUnit_Framework_TestCase
     {
         return array(
             array(
-                '01/01/01'
+                '0001/01/01'
             ),
             array(
                 '2017/03/06'
@@ -26,7 +26,8 @@ class MyDateTest extends PHPUnit_Framework_TestCase
      */
     public function testValidDates($date)
     {
-        $date = new MyDate($date);
+        $dateObject = new MyDate($date);
+        $this->assertEquals((string) $dateObject, $date);
     }
 
     public function providerInvalidDates()
@@ -68,11 +69,14 @@ class MyDateTest extends PHPUnit_Framework_TestCase
             array(
                 '2001/01/01',
                 2000 * 365 + (2000 / 4)
-            )
-            ,
+            ),
             array(
                 '2002/01/01',
                 2001 * 365 + (2000 / 4)
+            ),
+            array(
+                '2002/01/15',
+                2001 * 365 + (2000 / 4) + 14
             )
         );
     }

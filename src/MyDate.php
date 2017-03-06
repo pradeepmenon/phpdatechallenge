@@ -13,28 +13,25 @@ class MyDate
 {
 
     /**
-     * The date's year; e.g.
-     * '1901'.
+     * The date's year.
      *
      * @var string
      */
-    protected $year;
+    protected $year = '0001';
 
     /**
-     * The date's month; e.g.
-     * '01'.
+     * The date's month
      *
      * @var string
      */
-    protected $month;
+    protected $month = '01';
 
     /**
-     * The date's day; e.g.
-     * '01'.
+     * The date's day
      *
      * @var string
      */
-    protected $day;
+    protected $day = '01';
 
     /**
      * Constructor.
@@ -122,7 +119,47 @@ class MyDate
         // Hooray!
         $this->year = $year;
         $this->month = $month;
-        $this->date = $day;
+        $this->day = $day;
+    }
+
+    /**
+     * __toString()
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return "$this->year/$this->month/$this->day";
+    }
+
+    /**
+     * Getter.
+     *
+     * @return string
+     */
+    public function getYear()
+    {
+        return $this->year;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return string
+     */
+    public function getMonth()
+    {
+        return $this->month;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return string
+     */
+    public function getDay()
+    {
+        return $this->day;
     }
 
     /**
@@ -138,6 +175,7 @@ class MyDate
         $totalDays = 0;
         $year = (int) $this->year;
         $month = (int) $this->month;
+        $day = (int) $this->day;
         
         $totalDays += ($year - 1) * 365;
         // Add on leap days.
@@ -174,6 +212,7 @@ class MyDate
                 $monthDays += 0;
         }
         $totalDays += $monthDays;
+        $totalDays += $day - 1;
         // And if this year is a leap year...
         if ($month > 2 && ($year % 4) == 0) {
             $totalDays += 1;
@@ -194,6 +233,15 @@ class MyDate
      */
     public static function diff($start, $end)
     {
+        // Init our diff object.
+        $return = (object) array(
+            'years' => null,
+            'months' => null,
+            'days' => null,
+            'total_days' => null,
+            'invert' => null
+        );
+        
         $dateFrom = new MyDate($start);
         $dateTo = new MyDate($end);
         
@@ -203,18 +251,25 @@ class MyDate
         $fromElapsed = $dateFrom->getElapsedFromZero();
         $toElapsed = $dateTo->getElapsedFromZero();
         $diff = $toElapsed - $fromElapsed;
-        $inverted = ((int)$diff == $diff);
+        $inverted = ((int) $diff == $diff);
         
-
-        // Init our diff object.
-        $return = (object) array(
-            'years' => null,
-            'months' => null,
-            'days' => null,
-            'total_days' => abs($diff),
-            'invert' => $inverted
-        );
+        // Now, the spec doesn't make clear what happens if e.g. two dates are 500 years apart,
+        // so that leap days are much bigger than the days between the two months.
+        // For now, I'll just compare the raw values and see how the TDD (tests) react.
         
+        $yearDiff = $dateTo->getYear() - $dateFrom->getYear();
+        $monthDiff = $dateTo->getMonth() - $dateFrom->getMonth();
+        $dayDiff = $dateTo->getDay() - $dateFrom->getDay();
+        
+        $return->years = $yearDiff;
+        $return->months = $monthDiff;
+        $return->days = $dayDiff;
+        
+        $return->total_days = abs($diff);
+        $return->invert = $inverted;
+        var_dump($dateFrom);
+        var_dump($dateTo);
+        var_dump($return);
         return $return;
     }
 }
