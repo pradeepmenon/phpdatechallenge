@@ -1,0 +1,17 @@
+# https://github.com/vegasbrianc/docker-LAMP/
+
+avanti-cli:
+  image: ubuntu:16.10
+  image: php:7.0-cli
+  #image: php:7.0-apache
+  container_name: avanti-cli
+  ports:
+    - "80:80"
+  volumes:
+    - ./var/log/apache2:/var/log/apache2
+    - .:/var/www/html
+  working_dir: /var/www/html
+  command: sh /var/www/html/start.sh
+  #command: php -S 0.0.0.0:80 -t /var/www/html/
+  #command: ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+    
