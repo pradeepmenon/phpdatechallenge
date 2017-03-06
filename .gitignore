@@ -1,2 +1,7 @@
 vendor
 composer.lock
+
+# Eclipse IDE
+.buildpath
+.project
+.settings
