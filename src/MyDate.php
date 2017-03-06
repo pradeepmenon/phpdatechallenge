@@ -13,23 +13,26 @@ class MyDate
 {
 
     /**
-     * The date's year - for our purposes, an integer.
+     * The date's year; e.g.
+     * '1901'.
      *
-     * @var int
+     * @var string
      */
     protected $year;
 
     /**
-     * The date's month - for our purposes, a positive integer.
+     * The date's month; e.g.
+     * '01'.
      *
-     * @var int
+     * @var string
      */
     protected $month;
 
     /**
-     * The date's day - for our purposes, a positive integer.
+     * The date's day; e.g.
+     * '01'.
      *
-     * @var int
+     * @var string
      */
     protected $day;
 
@@ -123,6 +126,63 @@ class MyDate
     }
 
     /**
+     * Determine how many days have elapsed since 0001/01/01
+     *
+     * I've made this public instead of protected as it's useful for calling code.
+     *
+     * @return integer
+     * @throws \Exception
+     */
+    public function getElapsedFromZero()
+    {
+        $totalDays = 0;
+        $year = (int) $this->year;
+        $month = (int) $this->month;
+        
+        $totalDays += ($year - 1) * 365;
+        // Add on leap days.
+        // Hey, PHP 7!
+        $totalDays += intdiv($year, 4);
+        // Add on the (hard-coded) days in completed months this year.
+        // So if we're in May (5), then add in April's day's, and fall through;
+        // if we're in January (1), then add no days at all.
+        $monthDays = 0;
+        switch ((int) $month) {
+            case 12:
+                $monthDays += 30;
+            case 11:
+                $monthDays += 31;
+            case 10:
+                $monthDays += 30;
+            case 9:
+                $monthDays += 31;
+            case 8:
+                $monthDays += 31;
+            case 7:
+                $monthDays += 30;
+            case 6:
+                $monthDays += 31;
+            case 5:
+                $monthDays += 30;
+            case 4:
+                $monthDays += 31;
+            case 3:
+                $monthDays += 31;
+            case 2:
+                $monthDays += 31;
+            case 1:
+                $monthDays += 0;
+        }
+        $totalDays += $monthDays;
+        // And if this year is a leap year...
+        if ($month > 2 && ($year % 4) == 0) {
+            $totalDays += 1;
+        }
+        
+        return $totalDays;
+    }
+
+    /**
      * Return difference between two dates.
      *
      * For our purposes, the returned object is similar to
@@ -134,13 +194,25 @@ class MyDate
      */
     public static function diff($start, $end)
     {
+        $dateFrom = new MyDate($start);
+        $dateTo = new MyDate($end);
+        
+        // Work out the total difference. We could do something elegant by comparing the interplay
+        // between years / months / days of boths dates all at once, but for our purposes,
+        // we'll brute-force it by working out time elapsed for both dates and comparing them.
+        $fromElapsed = $dateFrom->getElapsedFromZero();
+        $toElapsed = $dateTo->getElapsedFromZero();
+        $diff = $toElapsed - $fromElapsed;
+        $inverted = ((int)$diff == $diff);
+        
+
         // Init our diff object.
         $return = (object) array(
             'years' => null,
             'months' => null,
             'days' => null,
-            'total_days' => null,
-            'invert' => null
+            'total_days' => abs($diff),
+            'invert' => $inverted
         );
         
         return $return;

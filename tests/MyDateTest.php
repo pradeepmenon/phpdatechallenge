@@ -15,8 +15,7 @@ class MyDateTest extends PHPUnit_Framework_TestCase
             array(
                 '2016/02/29'
             )
-        ) // A valid leap day
-;
+        ); // A valid leap day.
     }
 
     /**
@@ -38,18 +37,56 @@ class MyDateTest extends PHPUnit_Framework_TestCase
             ),
             array(
                 '2017/01/32'
-            ), // Not a valid day
+            ), // Not a valid day.
             array(
                 '2017/13/01'
-            ), // Not a valid month
+            ), // Not a valid month.
             array(
                 '2017/09/31'
-            ), // Not a valid day of the month
+            ), // Not a valid day of the month.
             array(
                 '2017/02/29'
             )
-        ) // Not a valid leap day
-;
+        ); // Not a valid leap day.
+    }
+
+    public function providerElapsedFromZero()
+    {
+        return array(
+            array(
+                '01/01/01',
+                0
+            ),
+            array(
+                '0002/01/01',
+                365
+            ),
+            array(
+                '1001/01/01',
+                1000 * 365 + (1000 / 4)
+            ),
+            array(
+                '2001/01/01',
+                2000 * 365 + (2000 / 4)
+            )
+            ,
+            array(
+                '2002/01/01',
+                2001 * 365 + (2000 / 4)
+            )
+        );
+    }
+
+    /**
+     * Verify MyDate::elapsedFromZero()
+     *
+     * @dataProvider providerElapsedFromZero
+     * @group validate
+     */
+    public function testElapsedFromZero($date, $expected)
+    {
+        $date = new MyDate($date);
+        $this->assertSame($expected, $date->getElapsedFromZero());
     }
 
     /**
