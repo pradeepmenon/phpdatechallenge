@@ -267,9 +267,10 @@ class MyDate
         
         $return->total_days = abs($diff);
         $return->invert = $inverted;
-        var_dump($dateFrom);
-        var_dump($dateTo);
-        var_dump($return);
+        // symfony/var-dumper
+        dump($dateFrom);
+        dump($dateTo);
+        dump($return);
         return $return;
     }
 }

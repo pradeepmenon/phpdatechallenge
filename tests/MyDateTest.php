@@ -233,7 +233,7 @@ class MyDateTest extends PHPUnit_Framework_TestCase
     {
         $d = MyDate::diff($s, $e);
         $a = $this->dateDiff($s, $e);
-        $this->assertSame($a->y, $d->years);
+        $this->assertSame($a->y, $d->years, "Years in '$s', '$e' do not match");
     }
 
     /**
@@ -246,7 +246,7 @@ class MyDateTest extends PHPUnit_Framework_TestCase
     {
         $d = MyDate::diff($s, $e);
         $a = $this->dateDiff($s, $e);
-        $this->assertSame($a->m, $d->months);
+        $this->assertSame($a->m, $d->months, "Months in '$s', '$e' do not match");
     }
 
     /**
@@ -259,7 +259,7 @@ class MyDateTest extends PHPUnit_Framework_TestCase
     {
         $d = MyDate::diff($s, $e);
         $a = $this->dateDiff($s, $e);
-        $this->assertSame($a->d, $d->days);
+        $this->assertSame($a->d, $d->days, "days in '$s', '$e' do not match");
     }
 
     /**
@@ -272,7 +272,7 @@ class MyDateTest extends PHPUnit_Framework_TestCase
     {
         $d = MyDate::diff($s, $e);
         $a = $this->dateDiff($s, $e);
-        $this->assertSame($a->days, $d->total_days);
+        $this->assertSame($a->days, $d->total_days, "Total Days in '$s', '$e' do not match");
     }
 
     /**
@@ -285,7 +285,7 @@ class MyDateTest extends PHPUnit_Framework_TestCase
     {
         $d = MyDate::diff($s, $e);
         $a = $this->dateDiff($s, $e);
-        $this->assertSame((bool) $a->invert, $d->invert);
+        $this->assertSame((bool) $a->invert, $d->invert, "Invert in '$s', '$e' do not match");
     }
 
     /**

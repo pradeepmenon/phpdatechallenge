@@ -16,7 +16,7 @@ Expecting something like "avanti-cli   sh /var/www/html/start.sh   Exit 0"
 Unlike most Docker containers, we don't expect a running state.
   
 You can then run commands against the container, e.g.
- * docker-compose run avanti-cli /var/www/html/vendor/bin/phpunit
+ * docker-compose run avanti-cli /var/www/html/vendor/bin/phpunit --group=validate
  etc.
  
  Of course, feel free to run the scripts directly if you already have PHP / Composer / etc. natively available. 
