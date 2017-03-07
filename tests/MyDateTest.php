@@ -51,7 +51,7 @@ class MyDateTest extends PHPUnit_Framework_TestCase
         ); // Not a valid leap day.
     }
 
-    public function providerElapsedFromZero()
+    public function providerElapsed()
     {
         return array(
             array(
@@ -82,15 +82,15 @@ class MyDateTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Verify MyDate::elapsedFromZero()
+     * Verify MyDate::Elapsed()
      *
-     * @dataProvider providerElapsedFromZero
+     * @dataProvider providerElapsed
      * @group validate
      */
-    public function testElapsedFromZero($date, $expected)
+    public function testElapsed($date, $expected)
     {
         $date = new MyDate($date);
-        $this->assertSame($expected, $date->getElapsedFromZero());
+        $this->assertSame($expected, $date->getElapsedDays());
     }
 
     /**

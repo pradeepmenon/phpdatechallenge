@@ -34,6 +34,15 @@ class MyDate
     protected $day = '01';
 
     /**
+     * Days elapsed since 0001/01/01
+     *
+     * @see getElapsedDays()
+     *
+     * @var string
+     */
+    protected $elapsedDays = null;
+
+    /**
      * Constructor.
      *
      * @param string $date            
@@ -120,6 +129,7 @@ class MyDate
         $this->year = $year;
         $this->month = $month;
         $this->day = $day;
+        $this->initElapsedDays();
     }
 
     /**
@@ -165,12 +175,9 @@ class MyDate
     /**
      * Determine how many days have elapsed since 0001/01/01
      *
-     * I've made this public instead of protected as it's useful for calling code.
-     *
-     * @return integer
      * @throws \Exception
      */
-    public function getElapsedFromZero()
+    protected function initElapsedDays()
     {
         $totalDays = 0;
         $year = (int) $this->year;
@@ -180,10 +187,12 @@ class MyDate
         $totalDays += ($year - 1) * 365;
         // Add on leap days.
         // Hey, PHP 7!
-        $totalDays += intdiv($year, 4);
+        $this->elapsedLeapDays = intdiv($year, 4);
+        $totalDays += $this->elapsedLeapDays;
         // Add on the (hard-coded) days in completed months this year.
-        // So if we're in May (5), then add in April's day's, and fall through;
-        // if we're in January (1), then add no days at all.
+        // e.g.
+        // * if we're in May (5), then add in all of April's days, then fall through to January
+        // * if we're in January (1), then no completed's month days at all.
         $monthDays = 0;
         switch ((int) $month) {
             case 12:
@@ -205,7 +214,7 @@ class MyDate
             case 4:
                 $monthDays += 31;
             case 3:
-                $monthDays += 31;
+                $monthDays += 28;
             case 2:
                 $monthDays += 31;
             case 1:
@@ -213,12 +222,48 @@ class MyDate
         }
         $totalDays += $monthDays;
         $totalDays += $day - 1;
+        $this->elapsedThisYear = $monthDays + $day - 1;
         // And if this year is a leap year...
         if ($month > 2 && ($year % 4) == 0) {
             $totalDays += 1;
+            $this->elapsedThisYear += 1;
         }
+        $this->elapsedDays = $totalDays;
         
         return $totalDays;
+    }
+
+    /**
+     * Getter.
+     * *
+     *
+     * @return integer
+     */
+    public function getElapsedDays()
+    {
+        return $this->elapsedDays;
+    }
+
+    /**
+     * Getter.
+     * *
+     *
+     * @return integer
+     */
+    public function getElapsedThisYear()
+    {
+        return $this->elapsedThisYear;
+    }
+
+    /**
+     * Getter.
+     * *
+     *
+     * @return integer
+     */
+    public function getElapsedLeapDays()
+    {
+        return $this->elapsedLeapDays;
     }
 
     /**
@@ -248,18 +293,24 @@ class MyDate
         // Work out the total difference. We could do something elegant by comparing the interplay
         // between years / months / days of boths dates all at once, but for our purposes,
         // we'll brute-force it by working out time elapsed for both dates and comparing them.
-        $fromElapsed = $dateFrom->getElapsedFromZero();
-        $toElapsed = $dateTo->getElapsedFromZero();
+        $fromElapsed = $dateFrom->getElapsedDays();
+        $toElapsed = $dateTo->getElapsedDays();
         $diff = $toElapsed - $fromElapsed;
-        $inverted = ((int) $diff == $diff);
-        
+        $inverted = $diff < 0; // (abs($diff) != $diff);
+                               
         // Now, the spec doesn't make clear what happens if e.g. two dates are 500 years apart,
-        // so that leap days are much bigger than the days between the two months.
-        // For now, I'll just compare the raw values and see how the TDD (tests) react.
+                               // so that leap days are much bigger than the days between the two months.
+                               // For now, I'll just compare the raw values and see how the TDD (tests) react.
         
         $yearDiff = $dateTo->getYear() - $dateFrom->getYear();
+        if ($dateTo->getElapsedThisYear() < $dateFrom->getElapsedThisYear()) {
+            $yearDiff -= 1;
+        }
         $monthDiff = $dateTo->getMonth() - $dateFrom->getMonth();
         $dayDiff = $dateTo->getDay() - $dateFrom->getDay();
+        if ($dayDiff < 0) {
+            $monthDiff -= 1;
+        }
         
         $return->years = $yearDiff;
         $return->months = $monthDiff;
