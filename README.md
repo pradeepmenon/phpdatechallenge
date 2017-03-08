@@ -1,6 +1,30 @@
 Avanti PHP Test
 ===============
 
+
+John's Implementation Notes
+-----------
+This is a clean-room implementation of Date-like functionality using modern PHP techniques.
+There's a temptation to re-implement a lot of behaviour from PHP and / or popular libraries, but for the purpose of this exercise, I'll keep to the scope of the test, treating it as a spec.
+I'm learning [Docker](https://www.docker.com/) amongst other things; have set up a PHP CLI environment for this exercise.
+To instantiate it, run:
+ * docker-compose up
+Verify the build with 
+ * docker-compose ps
+
+Expecting something like "avanti-cli   sh /var/www/html/start.sh   Exit 0"
+Unlike most Docker containers, we don't expect a running state.
+  
+You can then run commands against the container, e.g.
+ * docker-compose run avanti-cli /var/www/html/vendor/bin/phpunit --group=validate
+ etc.
+ 
+ Of course, feel free to run the scripts directly if you already have PHP / Composer / etc. natively available. 
+
+
+Original Instructions
+-----------
+
 Calculate the difference between two given dates without using any of the PHP date functions, objects or packages not written by yourself.
 
 This includes:
