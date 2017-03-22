@@ -35,8 +35,13 @@
 
         $second = ($dateArray['year']*365+$dateArray["mon"]*30+$dateArray["day"])*86400;
 
-        return $second;
+        return $second+self::getLeapCountSeconds($dateArray['year']);
 
+    }
+
+    private static function getLeapCountSeconds($year)
+    {
+        return ((int)($year/4)-(int)($year/100)+(int)($year/400))*86400;
     }
 
   }
